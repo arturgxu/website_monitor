@@ -28,12 +28,23 @@ class URLCheckResult:
     elapsed: Optional[float] = None
     headers: Optional[Dict[str, str]] = None
 
+DEFAULT_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36"
+}
+
 def _perform_request(url: str, method: str, timeout: float, verify_ssl: bool) -> URLCheckResult:
     result = URLCheckResult(url=url)
     start = time.time()
 
     try:
-        resp = requests.request(method, url, timeout=timeout, allow_redirects=True, verify=verify_ssl)
+        resp = requests.request(
+            method,
+            url,
+            headers=DEFAULT_HEADERS,
+            timeout=timeout,
+            verify=verify_ssl,
+            allow_redirects=True
+        )
         elapsed = time.time() - start
         result.status_code = resp.status_code
         result.headers = dict(resp.headers)
